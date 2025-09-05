@@ -2,7 +2,9 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\Task;
 use Illuminate\Http\Request;
+use Illuminate\Http\Response;
 
 class TaskController extends Controller
 {
@@ -11,7 +13,8 @@ class TaskController extends Controller
      */
     public function index()
     {
-        //
+        $tasks = Task::all();
+        return response()->json($tasks);
     }
 
     /**
@@ -19,7 +22,13 @@ class TaskController extends Controller
      */
     public function store(Request $request)
     {
-        //
+        $validate = $request->validate([
+           'name' => 'required',
+            'description' => 'required',
+            'status' => 'required',
+        ]);
+        $task = Task::create($validate);
+        return response()->json($task, Response::HTTP_CREATED);
     }
 
     /**
@@ -27,7 +36,8 @@ class TaskController extends Controller
      */
     public function show(string $id)
     {
-        //
+        $task = Task::findOrFail($id);
+        return response()->json($task);
     }
 
     /**
@@ -35,7 +45,16 @@ class TaskController extends Controller
      */
     public function update(Request $request, string $id)
     {
-        //
+        $task = Task::findOrFail($id);
+
+        $validated = $request->validate([
+            'name' => 'required',
+            'description' => 'required',
+            'status' => 'required',
+        ]);
+
+        $task->update($validated);
+        return response()->json($task);
     }
 
     /**
@@ -43,6 +62,9 @@ class TaskController extends Controller
      */
     public function destroy(string $id)
     {
-        //
+        $task = Task::findOrFail($id);
+        $task->delete();
+
+        return response()->json(null, Response::HTTP_NO_CONTENT);
     }
 }
