@@ -23,9 +23,9 @@ class TaskController extends Controller
     public function store(Request $request)
     {
         $validate = $request->validate([
-           'name' => 'required',
-            'description' => 'required',
-            'status' => 'required',
+            'title' => 'required|string|max:255',
+            'description' => 'nullable|string',
+            'status' => 'nullable|in:pending,in_progress,completed'
         ]);
         $task = Task::create($validate);
         return response()->json($task, Response::HTTP_CREATED);
@@ -48,9 +48,9 @@ class TaskController extends Controller
         $task = Task::findOrFail($id);
 
         $validated = $request->validate([
-            'name' => 'required',
-            'description' => 'required',
-            'status' => 'required',
+            'title' => 'required|string|max:255',
+            'description' => 'nullable|string',
+            'status' => 'nullable|in:pending,in_progress,completed'
         ]);
 
         $task->update($validated);
